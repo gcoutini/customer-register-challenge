@@ -1,0 +1,28 @@
+org: gcoutini
+app: customer-register-exercise
+service: customer-register-exercise
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+constructs:
+  jobs:
+    type: queue
+    worker:
+      handler: handler.consumer
+
+functions:
+  producer:
+    handler: handler.producer
+    events:
+      - httpApi:
+          method: post
+          path: /produce
+    environment:
+      QUEUE_URL: https://sqs.us-east-1.amazonaws.com/827554952782/customer-create
+
+plugins:
+  - serverless-lift
+  - serverless-offline
